@@ -30,3 +30,23 @@ window.addEventListener('message', (event) => {
   "user_id": "89cf5b22-fe48-11ea-a299-0242ac110002"
 }
 ```
+
+## Subscribing to live interaction events
+
+Interactions check if `window.onGiosgInteractionEvent` function exists. If so, then they will call this callback function when ever some event gets emitted from interaction. If event handler function (onGiosgInteractionEvent) returns `Promise` then interaction action handler will wait for the promise to be resolved before moving forward. Promise has timeout of 1000 milliseconds in order to guarantee good end user experience.
+
+Example snippet for listening interaction events:
+```javascript
+window.onGiosgInteractionEvent = () => {
+    const promise = new Promise(exampleLongRunningAction);
+    return promise;
+};
+
+function exampleLongRunningAction(resolve, reject) {
+    setTimeout(() => {
+        resolve("Action done");
+    }, 1000);
+}
+```
+
+### Events
