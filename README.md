@@ -106,7 +106,7 @@ The clickHistory will also not be a unique list. If the interaction user clicks 
 ```
 
 #### Start
-This event can be used as an impression indicator. It let's you know when a certain interaction is show to the user.
+This event can be used as an impression indicator. It let's you know when a certain interaction is shown to the user.
 
 Even though the `window.onGiosgInteractionEvent` should still return a Promise for this, the code won't wait for the promise to resolve. This is done deliberatly to ensure it doesn't affect the user experience.
 
