@@ -94,6 +94,8 @@ This event is triggered whenever an element within the interaction is clicked. T
 
 The click event can trigger twice very shortly after each other. This happens when the top most element doesn't have any click action on it, in that case the user will click through the element, but the clicked through element will still trigger an event, the clickHistory will also include the clicked through element.
 
+The clickHistory will also not be a unique list. If the interaction user clicks the same element twice, the list will contain the same identifier twice.
+
 ```json
 {
   "type": "interactiondesigner:click",
