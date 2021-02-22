@@ -36,6 +36,17 @@ Interaction Saved
 }
 ```
 
+Cancel
+
+```json
+{
+  "type": "interactiondesigner:cancel",
+  "interaction_id": "1b5298ef-3e7a-433c-8b74-866b0505225b",
+  "organization_id": "b76acd00-cf09-11e0-8104-00163ee6f85d",
+  "user_id": "89cf5b22-fe48-11ea-a299-0242ac110002"
+}
+```
+
 ## Subscribing to live interaction events
 
 Interactions check if `window.onGiosgInteractionEvent` function exists. If so, then they will call this callback function when ever some event gets emitted from interaction. The event handler function (onGiosgInteractionEvent) must return `Promise` and the interaction will wait for that promise to resolve before continueing (unless otherwise specified). We recommend the promise not to last more than 1000 milliseconds in order to guarantee good end user experience.
