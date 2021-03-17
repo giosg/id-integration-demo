@@ -1,3 +1,15 @@
+# Giosg Interaction Designer embedding demo
+
+This project aims to demonstrate how Giosg partners could embed Interaction Designer inside their application and use Giosg API's to control state of interactions.
+
+Features of this demo app:
+
+- Embed Interaction Designer using iframe
+- Publish interaction using API
+- Unpublish interaction using API
+- Revert interaction to previous published state using API
+- Delete interaction using API
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
@@ -38,6 +50,8 @@ Instead, it will copy all the configuration files and the transitive dependencie
 You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
 
 ## Learn More
+
+You can find Giosg API documentation for [Interaction Designer from docs.giosg.com](https://docs.giosg.com/api_reference/interaction_designer_http_api/).
 
 You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
