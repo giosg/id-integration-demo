@@ -1,17 +1,10 @@
-import React, { useState, FC } from "react";
+import React, { useState } from "react";
 
-import { observer } from "mobx-react-lite";
-import {
-  BrowserRouter as Router,
-  Route,
-  Switch,
-  Link,
-  useParams,
-} from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch, Link } from "react-router-dom";
 
 import { Modal, ModalHeader, ModalBody } from "reactstrap";
 
-import store, { CampaignStore } from "./campaign-store";
+import store from "./campaign-store";
 import { CampaignListView } from "./CampaignListView";
 import { HomeView } from "./Home";
 import { CreateCampaignForm } from "./CreateCampaignForm";

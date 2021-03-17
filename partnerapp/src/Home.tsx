@@ -1,18 +1,8 @@
 import React, { FC } from "react";
-import {
-  Button,
-  Modal,
-  ModalHeader,
-  ModalBody,
-  FormGroup,
-  Form,
-  Label,
-} from "reactstrap";
+import { Button } from "reactstrap";
 
-import store, { CampaignStore, Campaign } from "./campaign-store";
-import { CampaignListView } from "./CampaignListView";
+import { CampaignStore } from "./campaign-store";
 import { observer } from "mobx-react-lite";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 export const HomeView: FC<{
   store: CampaignStore;

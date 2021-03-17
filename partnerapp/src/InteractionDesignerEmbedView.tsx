@@ -1,7 +1,7 @@
 import React, { FC, useEffect } from "react";
 import { observer } from "mobx-react-lite";
 import { useParams, useHistory } from "react-router-dom";
-import { CampaignStore, Campaign } from "./campaign-store";
+import store, { CampaignStore, Campaign } from "./campaign-store";
 
 interface InteractionDesignerEvent {
   type: "interactiondesigner:cancel" | "interactiondesigner:save";
@@ -10,23 +10,27 @@ interface InteractionDesignerEvent {
   user_id: string;
 }
 
-const onInteractionDesignerEvent = (
+async function onInteractionDesignerEvent(
   eventData: InteractionDesignerEvent,
+  store: CampaignStore,
   campaign: Campaign,
   history: { push: (arg0: string) => void }
-) => {
+) {
   console.log("postMessage Event handler received: ", eventData, campaign);
   if (eventData.type === "interactiondesigner:cancel") {
+    await store.revertCampaign(campaign);
     window.location.href = "/campaigns";
   } else if (eventData.type === "interactiondesigner:save") {
     // Handle interaction save
     campaign.interactionId = eventData.interaction_id;
-    // TODO: Call publish?
+    await store.publishCampaign(campaign);
+
     setTimeout(() => {
+      // Redirect to preview view
       window.location.href = `/campaigns/${campaign.id}/view`;
     });
   }
-};
+}
 
 export const InteractionDesignerEmbedView: FC<{
   store: CampaignStore;
@@ -51,9 +55,10 @@ export const InteractionDesignerEmbedView: FC<{
     )
       return;
 
-    // Handle different types of events
+    // Handle different types of events from Interaction Designer
+    // See: TODO: Add docs link
     const eventData: InteractionDesignerEvent = JSON.parse(event.data);
-    onInteractionDesignerEvent(eventData, campaign!, history);
+    onInteractionDesignerEvent(eventData, store, campaign!, history);
   };
 
   useEffect(() => {
@@ -62,5 +67,10 @@ export const InteractionDesignerEmbedView: FC<{
       window.removeEventListener("message", postMessageListener);
     };
   });
-  return <iframe src={interactionDesignerUrl}></iframe>;
+  return (
+    <iframe
+      title="Embedded Interaction Designer"
+      src={interactionDesignerUrl}
+    ></iframe>
+  );
 });
