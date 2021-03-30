@@ -76,11 +76,15 @@ export async function createNewInteractionFromTemplate(
   name: string
 ): Promise<{ interactionUuid: string }> {
   // See: https://docs.giosg.com/api_reference/interaction_designer_interactions_api/#create-a-new-interaction
-  const collections = await getCollections();
+  const user = await getUser();
+  const mainCollection = (await getCollections())[0];
+  const mainTheme = (
+    await getThemes(user.organization.id, mainCollection.id)
+  )[0];
   const payload = Object.assign(interactionTemplate, {
     name: name,
-    workspaceUid: collections[0].id,
-    themeId: interactionTemplate.themeId,
+    workspaceUid: mainCollection.id,
+    themeId: mainTheme.uid,
     uid: null,
     interactionUuid: null,
   });
@@ -134,7 +138,21 @@ export async function getTemplates() {
   return await response.json();
 }
 
-export async function getCollections() {
+export async function getThemes(organizationId: string, collectionId: string) {
+  // TODO: Documentation pending
+  const response = await fetch(
+    `https://interactiondesigner.giosg.com/api/orgs/${organizationId}/groups/${collectionId}/themes`,
+    {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Token ${getApiToken()}`,
+      },
+    }
+  );
+  return await response.json();
+}
+
+export async function getCollections(): Promise<Array<{ id: string }>> {
   // See: https://docs.giosg.com/api_reference/interaction_designer_collections_api/#list-collections
   const response = await fetch(
     `https://interactiondesigner.giosg.com/api/v1/collections`,
@@ -148,7 +166,10 @@ export async function getCollections() {
   return await response.json();
 }
 
-export async function getUser() {
+export async function getUser(): Promise<{
+  full_name: string;
+  organization: { name: string; id: string };
+}> {
   // See: https://developers.giosg.com/http_api.html#retrieve-the-authenticated-user
   const response = await fetch(`https://service.giosg.com/api/v5/users/me`, {
     headers: {
