@@ -1,8 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 
-import { BrowserRouter as Router, Route, Switch, Link } from "react-router-dom";
-
-import { Modal, ModalHeader, ModalBody } from "reactstrap";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 import store from "./campaign-store";
 import { CampaignListView } from "./CampaignListView";
@@ -12,14 +10,6 @@ import { InteractionDesignerEmbedView } from "./InteractionDesignerEmbedView";
 import { InteractionPreviewView } from "./InteractionPreviewView";
 
 function App() {
-  const [modal, setModal] = useState(false);
-  const toggle = () => setModal(!modal);
-
-  //   const params: { campaignId?: string } = useParams();
-  //   const campaign = params.campaignId
-  //     ? store.getCampaign(params.campaignId)
-  //     : undefined;
-
   return (
     <div className="App container py-3">
       <Router>
@@ -40,14 +30,8 @@ function App() {
           </Route>
           <Route path="/">
             <HomeView store={store}></HomeView>
-            <Link to={"/campaigns"}>Campaigns</Link>
           </Route>
         </Switch>
-
-        <Modal isOpen={modal} toggle={toggle}>
-          <ModalHeader toggle={toggle}>This is modal</ModalHeader>
-          <ModalBody>Click outside to close this</ModalBody>
-        </Modal>
       </Router>
     </div>
   );

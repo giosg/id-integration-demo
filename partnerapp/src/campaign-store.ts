@@ -28,6 +28,15 @@ export class Campaign {
   }
 }
 
+export class Template {
+  constructor(
+    public interactionUuid: string,
+    public name: string,
+    public notes: string,
+    public themeId: number
+  ) {}
+}
+
 export class CampaignStore {
   token: string | undefined = undefined;
   currentCampaign: Campaign | undefined = undefined;
