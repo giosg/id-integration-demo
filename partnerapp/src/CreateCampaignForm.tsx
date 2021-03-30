@@ -1,17 +1,5 @@
 import React, { useState, useEffect, FC } from "react";
-import {
-  Button,
-  FormGroup,
-  Form,
-  Label,
-  Row,
-  Col,
-  Input,
-  Card,
-  CardImg,
-  CardTitle,
-  CardBody,
-} from "reactstrap";
+import { Button, FormGroup, Form, Label, Row, Col, Input } from "reactstrap";
 
 import { CampaignStore, Campaign, Template } from "./campaign-store";
 import { InteractionTemplate } from "./InteractionTeamplate";
