@@ -1,0 +1,5 @@
+{
+    "prettier.packageManager": "yarn",
+    "prettier.prettierPath": "/Users/arsi/dev/id-integration-demo/partnerapp/node_modules/.bin/prettier ",
+    "editor.formatOnSave": true
+}
