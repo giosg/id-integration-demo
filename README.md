@@ -10,6 +10,10 @@ Features of this demo app:
 - Revert interaction to previous published state using API
 - Delete interaction using API
 
+**Note** that this demo app does not implement [Giosg Single sign-on authentication](https://developers.giosg.com/authentication.html#single-sign-on-authentication) at the moment.
+
+To see a demo of SSO please check this [demo page](https://demo.giosg.com/ssologin.html).
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
