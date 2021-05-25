@@ -16,7 +16,7 @@ export const CampaignListView: FC<{
 
   return (
     <div>
-      <h2>Campaigns:</h2>
+      <h2>Campaigns</h2>
       <div>
         {store.campaigns.length > 0 ? (
           <ListGroup>
@@ -29,7 +29,9 @@ export const CampaignListView: FC<{
             ))}
           </ListGroup>
         ) : (
-          <h3>No existing campaigns yet! :( </h3>
+          <strong>
+            No existing campaigns yet. Start by clicking "Create campaign".
+          </strong>
         )}
         <div style={{ margin: "10px" }}>
           <Button

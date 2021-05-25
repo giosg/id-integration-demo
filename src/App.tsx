@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import store from "./campaign-store";
 import { CampaignListView } from "./CampaignListView";
 import { HomeView } from "./Home";
+import { OAuthView } from "./OAuth";
 import { CreateCampaignForm } from "./CreateCampaignForm";
 import { InteractionDesignerEmbedView } from "./InteractionDesignerEmbedView";
 import { InteractionPreviewView } from "./InteractionPreviewView";
@@ -27,6 +28,9 @@ function App() {
           </Route>
           <Route path="/campaigns">
             <CampaignListView store={store} />
+          </Route>
+          <Route path="/oauth">
+            <OAuthView store={store}></OAuthView>
           </Route>
           <Route path="/">
             <HomeView store={store}></HomeView>

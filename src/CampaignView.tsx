@@ -48,12 +48,9 @@ export const CampaignView: FC<{
         <Button color="danger" onClick={onDeleteClick}>
           <span className={"oi oi-trash"}></span> Delete
         </Button>
-        <Button
-          color={campaign.published ? "success" : "secondary"}
-          onClick={onViewClick}
-          disabled={!campaign.published}
-        >
-          <span className={"oi oi-eye"}></span> View live
+        <Button color="success" onClick={onViewClick}>
+          <span className={"oi oi-eye"}></span>{" "}
+          {campaign.published ? "View live" : "Preview"}
         </Button>
         {campaign.published ? (
           <Button color="warning" onClick={onUnpublishClick}>

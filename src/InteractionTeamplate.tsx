@@ -1,6 +1,7 @@
 import React, { FC } from "react";
-import { Button, Col, Card, CardImg, CardTitle, CardBody } from "reactstrap";
+import { Button, Col, Card, CardTitle, CardBody } from "reactstrap";
 
+import { getInteractionPreviewUrl } from "./interaction-designer-api";
 import { Template } from "./campaign-store";
 import { observer } from "mobx-react-lite";
 
@@ -12,20 +13,29 @@ export const InteractionTemplate: FC<{
   const isSelected =
     selectedTemplate &&
     selectedTemplate.interactionUuid === template.interactionUuid;
+  const previewUrl = getInteractionPreviewUrl(template.interactionUuid);
   return (
     <Col xs={6} sm={4}>
       <Card
         style={{ margin: "10px" }}
         color={isSelected ? "success" : undefined}
       >
-        <CardImg
-          top
-          width="100%"
-          src={`https://picsum.photos/seed/${template.interactionUuid}/200/200`} // Random image for interaction
-          alt={template.name}
-        />
         <CardBody>
-          <CardTitle tag="h5">{template.name}</CardTitle>
+          <iframe
+            title={`Interaction preview for ${template.name}`}
+            className="interaction-preview"
+            frameBorder="0"
+            src={previewUrl}
+          ></iframe>
+          <CardTitle
+            tag="h5"
+            onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+              e.preventDefault();
+              onTemplateSelect(template);
+            }}
+          >
+            {template.name}
+          </CardTitle>
           <Button
             color={isSelected ? "success" : "secondary"}
             className={"float-right"}

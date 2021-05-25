@@ -1,6 +1,7 @@
 import React, { FC, useEffect } from "react";
 import { observer } from "mobx-react-lite";
 import { useParams, useHistory } from "react-router-dom";
+import { INTERACTION_DESIGNER_ORIGIN } from "./interaction-designer-api";
 import store, { CampaignStore, Campaign } from "./campaign-store";
 
 interface InteractionDesignerEvent {
@@ -41,10 +42,9 @@ export const InteractionDesignerEmbedView: FC<{
   if (!campaign) {
     history.push("/campaigns");
   }
-  const baseurl = "https://interactiondesigner.giosg.com";
   const interactionDesignerUrl = campaign?.interactionId
-    ? `${baseurl}/interactions/${campaign.interactionId}/design`
-    : baseurl;
+    ? `${INTERACTION_DESIGNER_ORIGIN}/interactions/${campaign.interactionId}/design`
+    : INTERACTION_DESIGNER_ORIGIN;
 
   const postMessageListener = (event: MessageEvent) => {
     if (
@@ -69,6 +69,7 @@ export const InteractionDesignerEmbedView: FC<{
   });
   return (
     <iframe
+      className="interaction-designer"
       title="Embedded Interaction Designer"
       src={interactionDesignerUrl}
     ></iframe>
