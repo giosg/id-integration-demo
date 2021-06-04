@@ -249,14 +249,36 @@ export async function loginUserWithSSOToken(
   ssoClientId: string
 ) {
   const redirectTarget = encodeURIComponent(window.location.origin + "/oauth");
-  const loginUrl = `${SERVICE_GIOSG_ORIGIN}/sso/login?token=${accessToken}&next=${INTERACTION_DESIGNER_ORIGIN}`;
+  const loginUrl = `${SERVICE_GIOSG_ORIGIN}/sso/login?token=${accessToken}&next=${INTERACTION_DESIGNER_ORIGIN}/sso.html`;
   const loginFrame = document.createElement("iframe");
   loginFrame.src = loginUrl;
   loginFrame.style.visibility = "hidden";
 
-  loginFrame.addEventListener("load", () => {
-    console.log("Redirecting Oauth");
-    window.location.href = `${SERVICE_GIOSG_ORIGIN}/identity/authorize?response_type=id_token%20token&scope=openid&client_id=${ssoClientId}&state=st4t3F0rCsRf&nonce=R4nd0MsTr1ng&redirect_uri=${redirectTarget}`;
-  });
+  const postMessageListener = (event: MessageEvent) => {
+    if (
+      ![
+        "https://interactiondesigner.giosg.com",
+        "https://editor.staging.giosg.com",
+      ].includes(event.origin)
+    )
+      return;
+
+    // Handle different types of events from Interaction Designer
+    // See: TODO: Add docs link
+    const eventData = JSON.parse(event.data);
+
+    if (eventData.type === "interactionsso:login-complete") {
+      window.removeEventListener("message", postMessageListener);
+      console.log(
+        "SSO login done and Interaction Designer has been logged in:",
+        eventData
+      );
+      // We need to use OAuth for this demo app also so do the redirect now
+      window.location.href = `${SERVICE_GIOSG_ORIGIN}/identity/authorize?response_type=id_token%20token&scope=openid&client_id=${ssoClientId}&state=st4t3F0rCsRf&nonce=R4nd0MsTr1ng&redirect_uri=${redirectTarget}`;
+    }
+  };
+
+  window.addEventListener("message", postMessageListener);
+  loginFrame.addEventListener("load", () => {});
   document.body.appendChild(loginFrame);
 }
