@@ -4,7 +4,7 @@ export const INTERACTION_DESIGNER_ORIGIN =
   "https://interactiondesigner.giosg.com";
 export const SERVICE_GIOSG_ORIGIN = "https://service.giosg.com";
 
-function getApiToken() {
+export function getAccessToken() {
   const token = window.localStorage.getItem("giosg_api_token");
   if (!token) {
     return "api-token-not-set";
@@ -12,7 +12,7 @@ function getApiToken() {
   return JSON.parse(token);
 }
 
-export function setApiToken(accessToken: string) {
+export function setAccessToken(accessToken: string) {
   window.localStorage.setItem("giosg_api_token", JSON.stringify(accessToken));
 }
 
@@ -25,7 +25,7 @@ export async function publishInteraction(interactionId: string) {
       body: JSON.stringify({}),
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${getApiToken()}`,
+        Authorization: `Bearer ${getAccessToken()}`,
       },
     }
   );
@@ -41,7 +41,7 @@ export async function unpublishInteraction(interactionId: string) {
       body: JSON.stringify({}),
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${getApiToken()}`,
+        Authorization: `Bearer ${getAccessToken()}`,
       },
     }
   );
@@ -57,7 +57,7 @@ export async function revertInteraction(interactionId: string) {
       body: JSON.stringify({}),
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${getApiToken()}`,
+        Authorization: `Bearer ${getAccessToken()}`,
       },
     }
   );
@@ -72,7 +72,7 @@ export async function deleteInteraction(interactionId: string) {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${getApiToken()}`,
+        Authorization: `Bearer ${getAccessToken()}`,
       },
     }
   );
@@ -86,7 +86,7 @@ export async function getInteraction(interactionId: string) {
     {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${getApiToken()}`,
+        Authorization: `Bearer ${getAccessToken()}`,
       },
     }
   );
@@ -118,7 +118,7 @@ export async function createNewInteractionFromTemplate(
       body: JSON.stringify(payload),
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${getApiToken()}`,
+        Authorization: `Bearer ${getAccessToken()}`,
       },
     }
   );
@@ -139,7 +139,7 @@ export async function copyInteraction(
       body: JSON.stringify(payload),
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${getApiToken()}`,
+        Authorization: `Bearer ${getAccessToken()}`,
       },
     }
   );
@@ -149,15 +149,13 @@ export async function copyInteraction(
 export async function getTemplates() {
   // See: https://docs.giosg.com/api_reference/interaction_designer_interactions_api/#interaction-templates
   const whiteLabelled = true;
-  const response = await fetch(
-    `${INTERACTION_DESIGNER_ORIGIN}/api/templates?whiteLabelled=${whiteLabelled}`,
-    {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${getApiToken()}`,
-      },
-    }
-  );
+  const url = `${INTERACTION_DESIGNER_ORIGIN}/api/templates?whiteLabelled=${whiteLabelled}`;
+  const response = await fetch(url, {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${getAccessToken()}`,
+    },
+  });
   return await response.json();
 }
 
@@ -168,7 +166,7 @@ export async function getThemes(organizationId: string, collectionId: string) {
     {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${getApiToken()}`,
+        Authorization: `Bearer ${getAccessToken()}`,
       },
     }
   );
@@ -182,7 +180,7 @@ export async function getCollections(): Promise<Array<{ id: string }>> {
     {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${getApiToken()}`,
+        Authorization: `Bearer ${getAccessToken()}`,
       },
     }
   );
@@ -202,7 +200,7 @@ export async function getUser(): Promise<{
   const response = await fetch(`${SERVICE_GIOSG_ORIGIN}/api/v5/users/me`, {
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${getApiToken()}`,
+      Authorization: `Bearer ${getAccessToken()}`,
     },
   });
   return await response.json();
@@ -217,7 +215,9 @@ export interface SSOLoginInfo {
   lastName: string;
 }
 
-export async function getSSOLoginToken(ssoInfo: SSOLoginInfo): Promise<string> {
+export async function getSSOAccessToken(
+  ssoInfo: SSOLoginInfo
+): Promise<string> {
   console.log("Requesting SSO token..");
 
   // See: https://developers.giosg.com/authentication.html#token-request-with-sso
@@ -230,7 +230,7 @@ export async function getSSOLoginToken(ssoInfo: SSOLoginInfo): Promise<string> {
   formData.append("last_name", ssoInfo.lastName);
   formData.append("permissions", "settings users reports");
 
-  const tokenRequest = await fetch(`${SERVICE_GIOSG_ORIGIN}/sso/token`, {
+  const tokenRequest = await fetch(`${SERVICE_GIOSG_ORIGIN}/sso/access-token`, {
     body: formData,
     method: "post",
   });
@@ -242,43 +242,4 @@ export async function getSSOLoginToken(ssoInfo: SSOLoginInfo): Promise<string> {
   const tokenData = await tokenRequest.json();
   console.log("Token request was successfull!", tokenData);
   return tokenData.access_token;
-}
-
-export async function loginUserWithSSOToken(
-  accessToken: string,
-  ssoClientId: string
-) {
-  const redirectTarget = encodeURIComponent(window.location.origin + "/oauth");
-  const loginUrl = `${SERVICE_GIOSG_ORIGIN}/sso/login?token=${accessToken}&next=${INTERACTION_DESIGNER_ORIGIN}/sso.html`;
-  const loginFrame = document.createElement("iframe");
-  loginFrame.src = loginUrl;
-  loginFrame.style.visibility = "hidden";
-
-  const postMessageListener = (event: MessageEvent) => {
-    if (
-      ![
-        "https://interactiondesigner.giosg.com",
-        "https://editor.staging.giosg.com",
-      ].includes(event.origin)
-    )
-      return;
-
-    // Handle different types of events from Interaction Designer
-    // See: TODO: Add docs link
-    const eventData = JSON.parse(event.data);
-
-    if (eventData.type === "interactionsso:login-complete") {
-      window.removeEventListener("message", postMessageListener);
-      console.log(
-        "SSO login done and Interaction Designer has been logged in:",
-        eventData
-      );
-      // We need to use OAuth for this demo app also so do the redirect now
-      window.location.href = `${SERVICE_GIOSG_ORIGIN}/identity/authorize?response_type=id_token%20token&scope=openid&client_id=${ssoClientId}&state=st4t3F0rCsRf&nonce=R4nd0MsTr1ng&redirect_uri=${redirectTarget}`;
-    }
-  };
-
-  window.addEventListener("message", postMessageListener);
-  loginFrame.addEventListener("load", () => {});
-  document.body.appendChild(loginFrame);
 }

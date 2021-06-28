@@ -1,7 +1,10 @@
 import React, { FC, useEffect } from "react";
 import { observer } from "mobx-react-lite";
 import { useParams, useHistory } from "react-router-dom";
-import { INTERACTION_DESIGNER_ORIGIN } from "./interaction-designer-api";
+import {
+  INTERACTION_DESIGNER_ORIGIN,
+  getAccessToken,
+} from "./interaction-designer-api";
 import store, { CampaignStore, Campaign } from "./campaign-store";
 
 interface InteractionDesignerEvent {
@@ -42,9 +45,12 @@ export const InteractionDesignerEmbedView: FC<{
   if (!campaign) {
     history.push("/campaigns");
   }
-  const interactionDesignerUrl = campaign?.interactionId
-    ? `${INTERACTION_DESIGNER_ORIGIN}/interactions/${campaign.interactionId}/design`
-    : INTERACTION_DESIGNER_ORIGIN;
+  const interactionDesignerUrl =
+    (campaign?.interactionId
+      ? `${INTERACTION_DESIGNER_ORIGIN}/interactions/${campaign.interactionId}/design`
+      : INTERACTION_DESIGNER_ORIGIN) +
+    "#access_token" +
+    getAccessToken();
 
   const postMessageListener = (event: MessageEvent) => {
     if (
