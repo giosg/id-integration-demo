@@ -189,7 +189,7 @@ export async function getCollections(): Promise<Array<{ id: string }>> {
 
 export function getInteractionPreviewUrl(interactionId: string): string {
   // See: TODO: Update docs
-  return `${INTERACTION_DESIGNER_ORIGIN}/preview.html?interaction_id=${interactionId}`;
+  return `${INTERACTION_DESIGNER_ORIGIN}/preview.html?interaction_id=${interactionId}#access_token=${getAccessToken()}`;
 }
 
 export async function getUser(): Promise<{

@@ -36,6 +36,14 @@ async function onInteractionDesignerEvent(
   }
 }
 
+function getEventData(dataStr: string) {
+  try {
+    return JSON.parse(dataStr);
+  } catch (e) {
+    return {};
+  }
+}
+
 export const InteractionDesignerEmbedView: FC<{
   store: CampaignStore;
 }> = observer(({ store }) => {
@@ -49,7 +57,7 @@ export const InteractionDesignerEmbedView: FC<{
     (campaign?.interactionId
       ? `${INTERACTION_DESIGNER_ORIGIN}/interactions/${campaign.interactionId}/design`
       : INTERACTION_DESIGNER_ORIGIN) +
-    "#access_token" +
+    "#access_token=" +
     getAccessToken();
 
   const postMessageListener = (event: MessageEvent) => {
@@ -63,7 +71,7 @@ export const InteractionDesignerEmbedView: FC<{
 
     // Handle different types of events from Interaction Designer
     // See: TODO: Add docs link
-    const eventData: InteractionDesignerEvent = JSON.parse(event.data);
+    const eventData: InteractionDesignerEvent = getEventData(event.data);
     onInteractionDesignerEvent(eventData, store, campaign!, history);
   };
 
