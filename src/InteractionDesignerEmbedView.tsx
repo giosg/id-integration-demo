@@ -5,7 +5,7 @@ import {
   INTERACTION_DESIGNER_ORIGIN,
   getAccessToken,
 } from "./interaction-designer-api";
-import store, { CampaignStore, Campaign } from "./campaign-store";
+import { CampaignStore, Campaign } from "./campaign-store";
 
 interface InteractionDesignerEvent {
   type: "interactiondesigner:cancel" | "interactiondesigner:save";

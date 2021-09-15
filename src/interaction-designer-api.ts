@@ -193,16 +193,36 @@ export function getInteractionPreviewUrl(interactionId: string): string {
 }
 
 export async function getUser(): Promise<{
+  id: string;
   full_name: string;
   organization: { name: string; id: string };
 }> {
-  // See: https://developers.giosg.com/http_api.html#retrieve-the-authenticated-user
+  // See: https://docs.giosg.com/api_reference/giosg_live/giosg_http_api/users/#retrieve-the-authenticated-user
   const response = await fetch(`${SERVICE_GIOSG_ORIGIN}/api/v5/users/me`, {
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${getAccessToken()}`,
     },
   });
+  return await response.json();
+}
+
+export async function setUserLanguage(
+  languageCode: string
+): Promise<{ ui_language_code: string }> {
+  const user = await getUser();
+  // See: https://docs.giosg.com/api_reference/giosg_live/giosg_http_api/users/#update-user-preferences
+  const response = await fetch(
+    `${SERVICE_GIOSG_ORIGIN}/api/v5/users/${user.id}/preferences`,
+    {
+      method: "PATCH",
+      body: JSON.stringify({ ui_language_code: languageCode }),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${getAccessToken()}`,
+      },
+    }
+  );
   return await response.json();
 }
 

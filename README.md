@@ -9,12 +9,19 @@ Features of this demo app:
 - Unpublish interaction using API
 - Revert interaction to previous published state using API
 - Delete interaction using API
-
-**Note** that this demo app does not implement [Giosg Single sign-on authentication](https://developers.giosg.com/authentication.html#single-sign-on-authentication) at the moment.
+- Set users language
 
 To see a demo of SSO please check this [demo page](https://demo.giosg.com/ssologin.html).
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+
+## Running the demo
+
+1. First make sure dependencies are installed: `yarn install`
+2. Start the appliction: `yarn start`
+3. Start HTTPS tunnel with https://ngrok.com/ for example. This is needed for SSO login to work and also browser to allow iframing of Interaction Designer
+4. Make sure you have SSO Giosg App installed in the Giosg account you are using and it has your Ngrok url in allowed redirect urls.
+5. Navigate to your public Ngrok url (for example https://f24b-91-156-111-53.ngrok.io) and fill in the SSO login information
 
 ## Available Scripts
 
