@@ -10,6 +10,7 @@ import {
   CardBody,
   CardTitle,
   CardSubtitle,
+  Alert,
 } from "reactstrap";
 import { useLocalStorage } from "./utils";
 import { useHistory } from "react-router-dom";
@@ -57,10 +58,10 @@ export const HomeView: FC<{
         This is a demo application for Giosg partners to introduce how Giosg
         Interaction Designer could be embedded inside partner application.
       </p>
-      <small style={{ color: "red" }}>
-        Note that this example should be run from HTTPS site or the iframing
-        might not work due to browsers security restrictions!
-      </small>
+      <Alert color="warning">
+        <strong>Note</strong> that this example should be run from HTTPS site or
+        the iframing might not work due to browsers security restrictions!
+      </Alert>
 
       {!hasLoginInfo ? (
         <SSOLoginForm
@@ -101,16 +102,6 @@ export const SSOLoginForm: FC<{
           <a href="https://developers.giosg.com/authentication.html#single-sign-on-authentication">
             Click here to read more about Giosg SSO.
           </a>
-          <CardSubtitle tag="h6" className="mb-2" style={{ marginTop: "20px" }}>
-            Giosg account should preferably have following features enabled:
-          </CardSubtitle>
-
-          <ul>
-            <li>interaction_designer</li>
-            <li>id_whitelabel</li>
-            <li>id_publish_flow_hidden</li>
-            <li>id_collections_hidden</li>
-          </ul>
 
           <CardTitle tag="h5" style={{ marginTop: "40px" }}>
             Fill in the fields for requesting SSO token
