@@ -9,8 +9,11 @@ import {
   Card,
   CardBody,
   CardTitle,
-  CardSubtitle,
   Alert,
+  Dropdown,
+  DropdownToggle,
+  DropdownItem,
+  DropdownMenu,
 } from "reactstrap";
 import { useLocalStorage } from "./utils";
 import { useHistory } from "react-router-dom";
@@ -22,6 +25,7 @@ import {
   SSOLoginInfo,
   getSSOAccessToken,
   setAccessToken,
+  setUserLanguage,
 } from "./interaction-designer-api";
 
 export const HomeView: FC<{
@@ -35,12 +39,18 @@ export const HomeView: FC<{
   const hasLoginInfo =
     ssoLoginInfo && JSON.parse(ssoLoginInfo).email ? true : false;
 
-  const onSSOLoginClick = async (loginForm: SSOLoginInfo) => {
+  const onSSOLoginClick = async (
+    loginForm: SSOLoginInfo,
+    language: { name: string; code: string }
+  ) => {
     try {
       const accessToken = await getSSOAccessToken(loginForm);
       // Login was successfull, lets store login form info for future use
       setSsoLoginInfo(JSON.stringify(loginForm));
       setAccessToken(accessToken);
+
+      // Set users language
+      await setUserLanguage(language.code);
 
       history.push("/");
     } catch (e) {
@@ -79,7 +89,10 @@ export const HomeView: FC<{
 
 export const SSOLoginForm: FC<{
   previousLoginInfo: SSOLoginInfo | undefined;
-  onSSOLoginClick: (loginForm: SSOLoginInfo) => Promise<void>;
+  onSSOLoginClick: (
+    loginForm: SSOLoginInfo,
+    language: { name: string; code: string }
+  ) => Promise<void>;
 }> = observer(({ onSSOLoginClick }) => {
   const [loginForm, setLoginForm] = useState({
     email: "",
@@ -89,6 +102,27 @@ export const SSOLoginForm: FC<{
     firstName: "",
     lastName: "",
   });
+  const [languageDropdownOpen, setLanguageDropdownOpen] = useState(false);
+  const availableLanguages = [
+    { name: "English", code: "en" },
+    { name: "Korean", code: "ko" },
+    { name: "Japanese", code: "ja" },
+    { name: "Chinese (Traditionel)", code: "zh-hant" },
+    { name: "Chinese (Simplified)", code: "zh-hans" },
+  ];
+  const [selectedLanguage, setSelectedLanguage] = useState(
+    availableLanguages[0]
+  );
+  const languageChoices = availableLanguages.map((lng) => {
+    return (
+      <DropdownItem key={lng.code} onClick={() => setSelectedLanguage(lng)}>
+        {lng.name}
+      </DropdownItem>
+    );
+  });
+  const toggleLanguageDropdown = () =>
+    setLanguageDropdownOpen((prevState) => !prevState);
+
   console.log(loginForm);
   return (
     <>
@@ -228,11 +262,31 @@ export const SSOLoginForm: FC<{
               </Col>
             </FormGroup>
 
+            <FormGroup row>
+              <Label for="language" sm={3}>
+                Language
+              </Label>
+              <Col sm={9}>
+                <Dropdown
+                  name="language"
+                  id="language"
+                  isOpen={languageDropdownOpen}
+                  toggle={toggleLanguageDropdown}
+                >
+                  <DropdownToggle caret>{selectedLanguage.name}</DropdownToggle>
+                  <DropdownMenu>
+                    <DropdownItem header>Available languages</DropdownItem>
+                    {languageChoices}
+                  </DropdownMenu>
+                </Dropdown>
+              </Col>
+            </FormGroup>
+
             <FormGroup className={"float-right"}>
               <Button
                 color="primary"
                 onClick={() => {
-                  onSSOLoginClick(loginForm);
+                  onSSOLoginClick(loginForm, selectedLanguage);
                 }}
               >
                 Login with SSO
