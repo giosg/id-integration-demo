@@ -1,7 +1,10 @@
 import React, { FC, useEffect } from "react";
 import { observer } from "mobx-react-lite";
 import { useParams, useHistory } from "react-router-dom";
-import { INTERACTION_DESIGNER_ORIGIN } from "./interaction-designer-api";
+import {
+  INTERACTION_DESIGNER_ORIGIN,
+  getAccessToken,
+} from "./interaction-designer-api";
 import store, { CampaignStore, Campaign } from "./campaign-store";
 
 interface InteractionDesignerEvent {
@@ -33,6 +36,14 @@ async function onInteractionDesignerEvent(
   }
 }
 
+function getEventData(dataStr: string) {
+  try {
+    return JSON.parse(dataStr);
+  } catch (e) {
+    return {};
+  }
+}
+
 export const InteractionDesignerEmbedView: FC<{
   store: CampaignStore;
 }> = observer(({ store }) => {
@@ -42,9 +53,12 @@ export const InteractionDesignerEmbedView: FC<{
   if (!campaign) {
     history.push("/campaigns");
   }
-  const interactionDesignerUrl = campaign?.interactionId
-    ? `${INTERACTION_DESIGNER_ORIGIN}/interactions/${campaign.interactionId}/design`
-    : INTERACTION_DESIGNER_ORIGIN;
+  const interactionDesignerUrl =
+    (campaign?.interactionId
+      ? `${INTERACTION_DESIGNER_ORIGIN}/interactions/${campaign.interactionId}/design`
+      : INTERACTION_DESIGNER_ORIGIN) +
+    "#access_token=" +
+    getAccessToken();
 
   const postMessageListener = (event: MessageEvent) => {
     if (
@@ -57,7 +71,7 @@ export const InteractionDesignerEmbedView: FC<{
 
     // Handle different types of events from Interaction Designer
     // See: TODO: Add docs link
-    const eventData: InteractionDesignerEvent = JSON.parse(event.data);
+    const eventData: InteractionDesignerEvent = getEventData(event.data);
     onInteractionDesignerEvent(eventData, store, campaign!, history);
   };
 

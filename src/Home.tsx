@@ -19,8 +19,8 @@ import { observer } from "mobx-react-lite";
 import {
   getUser,
   SSOLoginInfo,
-  getSSOLoginToken,
-  loginUserWithSSOToken,
+  getSSOAccessToken,
+  setAccessToken,
 } from "./interaction-designer-api";
 
 export const HomeView: FC<{
@@ -36,11 +36,12 @@ export const HomeView: FC<{
 
   const onSSOLoginClick = async (loginForm: SSOLoginInfo) => {
     try {
-      const loginToken = await getSSOLoginToken(loginForm);
+      const accessToken = await getSSOAccessToken(loginForm);
       // Login was successfull, lets store login form info for future use
       setSsoLoginInfo(JSON.stringify(loginForm));
-      loginUserWithSSOToken(loginToken, loginForm.clientId);
-      history.push("/oauth");
+      setAccessToken(accessToken);
+
+      history.push("/");
     } catch (e) {
       alert(e);
     }
